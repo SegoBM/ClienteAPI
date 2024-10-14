@@ -1,8 +1,9 @@
+# Brian Segoviano Muñoz
+# 20240621
+
 from pydantic import BaseModel
-from typing import List
 import requests
-from pydantic import parse_obj_as
-from datetime import datetime  # Importa la librería datetime
+from datetime import datetime 
 
 # Modelo de datos para un terremoto
 class Terremoto(BaseModel):
@@ -21,25 +22,21 @@ params = {
     "endtime": "2014-01-02"
 }
 
-# Realiza la solicitud HTTP GET
+# HTTP GET
 response = requests.get(url, params=params)
 
-# Verifica que la solicitud fue exitosa
 if response.status_code == 200:
-    # Obtiene los datos en formato JSON
     data = response.json()
 
-    # Extrae las características de los terremotos
     terremotos_data = []
     for feature in data['features']:
-        # Convierte el tiempo de milisegundos desde UNIX a un formato de fecha legible
         fecha_legible = datetime.utcfromtimestamp(feature['properties']['time'] / 1000).strftime('%Y-%m-%d %H:%M:%S')
 
         terremoto = Terremoto(
             id=feature['id'],
             magnitude=feature['properties']['mag'],
             lugar=feature['properties']['place'],
-            fecha=fecha_legible  # Asigna la fecha legible
+            fecha=fecha_legible  
         )
         terremotos_data.append(terremoto)
     
